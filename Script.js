@@ -1,4 +1,4 @@
-function check() {
+async function check() {
   let url = document.getElementById("urlInput").value;
   let result = document.getElementById("result");
 
@@ -7,9 +7,19 @@ function check() {
     return;
   }
 
-  if (url.includes("login") || url.includes("verify")) {
-    result.innerHTML = "🔴 Suspect";
-  } else {
-    result.innerHTML = "🟢 OK";
+  result.innerHTML = "🔎 Analyse en cours...";
+
+  try {
+    const response = await fetch("https://dacelien-server.onrender.com/check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url })
+    });
+
+    const data = await response.json();
+    result.innerHTML = data.message;
+
+  } catch (error) {
+    result.innerHTML = "⚠️ Erreur, réessaie plus tard";
   }
 }
